@@ -2,9 +2,6 @@ name: build handler
 
 on:
     workflow_call:
-      secrets:
-        client-id: 
-            required: true
       inputs:
         target:
           required: true
@@ -43,6 +40,6 @@ jobs:
     if: needs.check.outputs.result.check
     uses: ./.github/workflows/build.yml
     with:
-      target: ${{inputs.target }}
+      target: ${{ inputs.target }}
       tag-version: ${{ vars.TAG_VERSION }}
     secrets: inherit
