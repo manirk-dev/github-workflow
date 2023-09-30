@@ -24,6 +24,9 @@ jobs:
       - name: Checkout code from repo
         uses: actions/checkout@v3
 
+      - name: install @actions/core and @actions/github packages
+        run: npm i @actions/core @actions/github
+
       - name: Prepare Tag
         id: prepare-tag
         uses: './.github/workflows/actions/setup-tag'
