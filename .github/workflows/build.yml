@@ -6,9 +6,7 @@ on:
       target:
         required: true
         type: string
-      tag-version:
-        required: true
-        type: string
+        description: Target environment for the build
     secrets:
       CLIENT_ID:
         required: true
@@ -26,17 +24,35 @@ jobs:
       - name: Checkout code from repo
         uses: actions/checkout@v3
 
-      - name: Create Tag 
-        if: inputs.target == 'development'
-        uses: actions/github-script@v6
+      - name: Prepare Tag
+        id: prepare-tag
+        uses: './.github/workflows/actions/setup-tag'
         with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ inputs.tag-version }}',
-              sha: context.sha
-            })
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ vars.TAG_VERSION }}
+
+
+      - name: Create Tag
+        env: 
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.prepare-tag.outputs.tag-version }}
+        run: |
+          git tag -a $tag -m "Tag ${{ env.tag }} for ${{ inputs.target }}"
+          git push origin $tag
+
+
+      - name: Create Release
+        env: 
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.prepare-tag.outputs.tag-version }}
+        run: |
+          gh release create "$tag" \
+          --repo "$GITHUB_REPOSITORY" \
+          --title "${GITHUB_REPOSITORY#*/} ${tag#v}" \
+          --generate-notes
+          --verify-tag
+          --notes-from-tag
+          --prerelease
         
       - shell: bash
         env:

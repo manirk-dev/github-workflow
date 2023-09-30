@@ -1,0 +1,20 @@
+name: "Setup Tag"
+description: "Manages tag version and repository variables"
+inputs:
+  tag: # id of input
+    description: "Current tag value from repository variable"
+    required: true
+    default: 0
+  token:
+    description: "Github token for making api calls using octokit"
+    required: true
+  target:
+    description: "Target environment for the build"
+    required: true
+    default: "development"
+outputs:
+  tag-version: # id of output
+    description: "New tag version for use in the build release"
+runs:
+  using: "node20"
+  main: "setup-tag.js"
