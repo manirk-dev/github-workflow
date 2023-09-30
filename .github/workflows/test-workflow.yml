@@ -36,6 +36,6 @@ jobs:
     steps:
       - name: using result
         env:
-          value: ${{ fromJson(needs.check.outputs.result) }}
-        run:
-          echo "${value.isProduction}"
+          check: ${{ fromJson(needs.check.outputs.result).check }}
+        run: |
+          echo "result is: $check"
