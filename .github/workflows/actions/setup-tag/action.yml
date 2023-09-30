@@ -5,9 +5,6 @@ inputs:
     description: "Current tag value from repository variable"
     required: true
     default: 0
-  token:
-    description: "Github token for making api calls using octokit"
-    required: true
   target:
     description: "Target environment for the build"
     required: true

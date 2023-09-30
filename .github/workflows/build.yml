@@ -24,20 +24,18 @@ jobs:
       - name: Checkout code from repo
         uses: actions/checkout@v3
 
-      - name: install @actions/core and @actions/github packages
-        run: npm i @actions/core @actions/github
+      - name: install @actions/core package
+        run: npm i @actions/core
 
       - name: Prepare Tag
         id: prepare-tag
         uses: './.github/workflows/actions/setup-tag'
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ vars.TAG_VERSION }}
 
 
       - name: Create Tag
         env: 
-          token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.prepare-tag.outputs.tag-version }}
         run: |
           git tag -a $tag -m "Tag ${{ env.tag }} for ${{ inputs.target }}"
@@ -45,8 +43,7 @@ jobs:
 
 
       - name: Create Release
-        env: 
-          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
           tag: ${{ steps.prepare-tag.outputs.tag-version }}
         run: |
           gh release create "$tag" \
@@ -61,3 +58,10 @@ jobs:
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
         run: npm run build
+
+      - name: Persiste tag version
+        run: |
+          gh variable set TAG_VERSION \
+          --body ${{ steps.prepare-tag.outputs.tag-version }}
+          --env ${{ inputs.target }}
+          --org ${{ github.repository_owner }}
