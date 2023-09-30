@@ -28,4 +28,14 @@ jobs:
               check: $check
             });
           ")
-          echo "::set-output name=result::$JSON_STRING"
+          echo "result=$JSON_STRING" >> "$GITHUB_OUTPUT"
+  
+  build:
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - name: using result
+        env:
+          value: ${{ fromJson(needs.check.outputs.result) }}
+        run:
+          echo "${value.isProduction}"
