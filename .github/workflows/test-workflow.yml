@@ -20,12 +20,13 @@ jobs:
           isDevelopment: true
         shell: bash
         run: |
+          check: [$isProduction] || [$isStaging] || [$isDevelopment]
           JSON_STRING=$(node -pe "
             JSON.stringify({
               isProduction: '$isProduction',
               isStaging: '$isStaging',
               isDevelopment: '$isDevelopment'
-              check: [$isProduction] || [$isStaging] || [$isDevelopment]
+              check: $check
             });
           ")
           echo "::set-output name=result::$JSON_STRING"
