@@ -33,6 +33,11 @@ jobs:
         with:
           tag: ${{ vars.TAG_VERSION }}
 
+      - name: Config git globals
+        run: |
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+
 
       - name: Create Tag
         env: 
