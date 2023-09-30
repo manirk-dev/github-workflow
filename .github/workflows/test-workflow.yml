@@ -3,7 +3,7 @@ name: test workflow
 on:
   push:
   pull_request:
-    
+
   workflow_dispatch:
 
 jobs:
@@ -20,9 +20,12 @@ jobs:
           isDevelopment: true
         shell: bash
         run: |
-          obj result
-          result.isProduction = $isProduction
-          result.isStaging = $isStaging
-          result.isDevelopment = $isDevelopment
-          result.check = [$isProduction] || [$isStaging] || [$isDevelopment]
-          echo "result=result" >> "$GITHUB_OUTPUT"
+          JSON_STRING=$(node -pe "
+            JSON.stringify({
+              isProduction: '$isProduction',
+              isStaging: '$isStaging',
+              isDevelopment: '$isDevelopment'
+              check: [$isProduction] || [$isStaging] || [$isDevelopment]
+            });
+          ")
+          echo "::set-output name=result::$JSON_STRING"
