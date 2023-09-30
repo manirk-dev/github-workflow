@@ -17,4 +17,4 @@ outputs:
     description: "New tag version for use in the build release"
 runs:
   using: "node20"
-  main: "setup-tag.js"
+  main: "action.js"
