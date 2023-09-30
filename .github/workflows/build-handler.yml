@@ -1,0 +1,48 @@
+name: build handler
+
+on:
+    workflow_call:
+      secrets:
+        client-id: 
+            required: true
+      inputs:
+        target:
+          required: true
+          type: string
+        tag-version:
+          required: true
+          type: string
+        branch-name:
+          required: true
+          type: string
+            
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.check.outputs.result }}
+    steps:
+      - name: checking readiness
+        id: check
+        env:
+          isProduction: ${{ inputs.branch-name == 'main' && inputs.target == 'production' && github.event.pull_request.merged == true }}
+          isStaging: ${{ inputs.branch-name == 'main' && inputs.target == 'staging' && github.event.pull_request.merged == true }}
+          isDevelopment: ${{ inputs.branch-name != 'main' && inputs.target == 'development' && github.event.pull_request.merged == false }}
+        run: |
+          obj result
+          result.isProduction = $env.isProduction
+          result.isStaging = $env.isStaging
+          result.isDevelopment = $env:isDevelopment
+          result.check = [$env:isProduction] || [$env:isStaging] || [$env:isDevelopment]
+          echo "result=result" >> "$GITHUB_OUTPUT"
+
+  invoke:
+    name: triggering build workflow
+    needs: check
+    if: needs.check.outputs.result.check
+    uses: ./.github/workflows/build.yml
+    with:
+      target: ${{inputs.target }}
+      tag-version: ${{ vars.TAG_VERSION }}
+    secrets: inherit
