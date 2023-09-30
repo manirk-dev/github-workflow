@@ -28,6 +28,7 @@ jobs:
           isDevelopment: ${{ inputs.branch-name != 'main' && inputs.target == 'development' && github.event.pull_request.merged == false }}
         run: |
           check=$isProduction || $isStaging || $isDevelopment
+          echo "check is: $check"
           JSON_STRING=$(node -pe "
             JSON.stringify({
               isProduction: '$isProduction',
