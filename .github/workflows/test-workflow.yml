@@ -1,0 +1,28 @@
+name: test workflow
+
+on:
+  push:
+  pull_request:
+    
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.check.outputs.result }}
+    steps:
+      - name: checking readiness
+        id: check
+        env:
+          isProduction: true
+          isStaging: true
+          isDevelopment: true
+        shell: bash
+        run: |
+          obj result
+          result.isProduction = $isProduction
+          result.isStaging = $isStaging
+          result.isDevelopment = $isDevelopment
+          result.check = [$isProduction] || [$isStaging] || [$isDevelopment]
+          echo "result=result" >> "$GITHUB_OUTPUT"

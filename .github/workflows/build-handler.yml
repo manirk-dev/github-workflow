@@ -26,12 +26,13 @@ jobs:
           isProduction: ${{ inputs.branch-name == 'main' && inputs.target == 'production' && github.event.pull_request.merged == true }}
           isStaging: ${{ inputs.branch-name == 'main' && inputs.target == 'staging' && github.event.pull_request.merged == true }}
           isDevelopment: ${{ inputs.branch-name != 'main' && inputs.target == 'development' && github.event.pull_request.merged == false }}
+        shell: bash
         run: |
           obj result
-          result.isProduction = $env.isProduction
-          result.isStaging = $env.isStaging
-          result.isDevelopment = $env:isDevelopment
-          result.check = [$env:isProduction] || [$env:isStaging] || [$env:isDevelopment]
+          result.isProduction = $isProduction
+          result.isStaging = $isStaging
+          result.isDevelopment = $isDevelopment
+          result.check = [$isProduction] || [$isStaging] || [$isDevelopment]
           echo "result=result" >> "$GITHUB_OUTPUT"
 
   invoke:
