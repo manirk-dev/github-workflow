@@ -59,10 +59,11 @@ jobs:
           --verify-tag \
           --prerelease
         
-      - shell: bash
+      - name: Triggering build
+        shell: bash
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
-        run: npm run build
+        run: npm run build -- $CLIENT_ID
 
       - name: Persiste tag version
         env:
