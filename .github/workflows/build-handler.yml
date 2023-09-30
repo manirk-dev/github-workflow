@@ -30,6 +30,7 @@ jobs:
           check=false
           if [["$isProduction" = true || "$isStaging" = true || "$isDevelopment" = true]; then
             check=true
+          fi
           echo "check is: $check"
           JSON_STRING=$(node -pe "
             JSON.stringify({
