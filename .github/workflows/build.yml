@@ -71,5 +71,4 @@ jobs:
         run: |
           gh variable set TAG_VERSION \
           --body ${{ steps.prepare-tag.outputs.tag-version }} \
-          --env ${{ inputs.target }} \
-          --org ${{ github.repository_owner }}
+          --env ${{ inputs.target }}
