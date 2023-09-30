@@ -25,7 +25,7 @@ jobs:
             JSON.stringify({
               isProduction: '$isProduction',
               isStaging: '$isStaging',
-              isDevelopment: '$isDevelopment'
+              isDevelopment: '$isDevelopment',
               check: $check
             });
           ")
