@@ -28,10 +28,10 @@ jobs:
         id: get-tag
         run: |
           search=$(echo ${{ inputs.target }} | cut -c 1)
-          default-tag="$search"0.0.0
+          default_tag="${search}0.0.0"
           git pull \
           && version=$(git describe --tags $(git rev-list --tags --max-count=1) | grep ^$search)
-          && echo "current_tag=${version:-$default-tag}" >> "$GITHUB_ENV" 
+          && echo "current_tag=${version:-$default_tag}" >> "$GITHUB_ENV" 
 
       - name: Prepare Tag
         id: prepare-tag
