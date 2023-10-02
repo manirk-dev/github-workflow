@@ -7,6 +7,10 @@ on:
         required: true
         type: string
         description: Target environment for the build
+      branch:
+        required: true
+        type: string
+        description: Current branch
     secrets:
       CLIENT_ID:
         required: true
@@ -24,7 +28,7 @@ jobs:
       - name: Checkout code from repo
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ inputs.branch }}
           fetch-tags: true
 
       - name: Config git globals
