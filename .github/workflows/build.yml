@@ -42,9 +42,7 @@ jobs:
         run: |
           search="$(echo "${{ inputs.target }}" | cut -c 1)"
           default_tag="${search}0.0.0"
-          rev="$(git rev-list --tags --all --max-count=1)"
-          extracted="$(git describe --tags --always $rev --abbrev=0)"
-          version="$(echo $extracted) | grep ^"$search""
+          version="$(git tag --list --sort=-version:refname "${search}*" | head -n 1)"
           echo "Current version is: $version"
           echo "revision is: $rev is the current"
           echo "current_tag=${version:-$default_tag}" >> $GITHUB_ENV
