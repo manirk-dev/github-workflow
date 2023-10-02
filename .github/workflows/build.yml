@@ -25,12 +25,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.ref_name }}
 
       - name: Get Tag
         id: get-tag
         run: |
           search=$(echo "${{ inputs.target }}" | cut -c 1)
           default_tag="${search}0.0.0"
+          version=$(git describe --tags --always $(git rev-list --tags --max-count=1) | grep ^$search)
           echo "current_tag=${version:-$default_tag}" >> $GITHUB_ENV
 
       - name: install @actions/core package
