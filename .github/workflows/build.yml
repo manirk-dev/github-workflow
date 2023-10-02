@@ -33,6 +33,9 @@ jobs:
           version=$(git describe --tags --always $(git rev-list --tags --max-count=1) | grep ^$search)
           echo "current_tag=${version:-$default_tag}" >> $GITHUB_ENV
 
+      - name: install @actions/core package
+        run: npm i @actions/core
+
       - name: Prepare Tag
         id: prepare-tag
         uses: './.github/workflows/actions/setup-tag'
