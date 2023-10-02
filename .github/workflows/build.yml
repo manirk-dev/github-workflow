@@ -20,6 +20,11 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.8.1
 
+      - name: Config git globals
+        run: |
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout code from repo
         uses: actions/checkout@v4
@@ -43,11 +48,6 @@ jobs:
         uses: './.github/workflows/actions/setup-tag'
         with:
           tag: ${{ env.current_tag }}
-
-      - name: Config git globals
-        run: |
-          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
-          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
 
 
       - name: Create Tag
