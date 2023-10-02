@@ -40,11 +40,11 @@ jobs:
         id: get-tag
         shell: bash
         run: |
-          search=$(echo "${{ inputs.target }}" | cut -c 1)
+          search="$(echo "${{ inputs.target }}" | cut -c 1)"
           default_tag="${search}0.0.0"
           git status
           rev="$(git rev-list --tags --all --max-count=1)"
-          echo "Current version is: $(git describe --tags --always $rev --abbrev=0)"
+          echo "Current version is: $(git describe --tags --always $rev --abbrev=0 | grep ^$search)"
           echo "revision is: $rev is the current"
           echo "current_tag=${version:-$default_tag}" >> $GITHUB_ENV
 
