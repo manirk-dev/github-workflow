@@ -82,6 +82,17 @@ jobs:
       tag: ${{ needs.build.outputs.tag }}
 
     steps:
+      - name: Checkout code from repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 0
+
+      - name: Config git globals
+        run: |
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+
       - name: Persist tag ${{ env.tag }}
         run: |
           git fetch origin ${{ inputs.branch }}
