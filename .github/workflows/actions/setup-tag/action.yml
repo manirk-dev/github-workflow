@@ -4,11 +4,7 @@ inputs:
   tag: # id of input
     description: "Current tag value from repository variable"
     required: true
-    default: 0
-  target:
-    description: "Target environment for the build"
-    required: true
-    default: "development"
+    default: d0.0.0
 outputs:
   tag-version: # id of output
     description: "New tag version for use in the build release"
