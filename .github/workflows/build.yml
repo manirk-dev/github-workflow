@@ -89,8 +89,9 @@ jobs:
         env: 
           tag: ${{ steps.prepare-tag.outputs.tag-version }}
         run: |
+          git fetch origin ${{ inputs.branch }}
           sed -i "s/${{ inputs.target }}=/${{ inputs.target }}=$tag/g" ${{ github.workspace }}/version.ini
           git status
           git add .
           git commit -m "updated ${{ inputs.target }} version to $tag"
-          git push origin ${{ github.ref_name }}
+          git push origin ${{ inputs.branch }}
