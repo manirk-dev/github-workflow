@@ -39,8 +39,9 @@ jobs:
         run: |
           search=$(echo "${{ inputs.target }}" | cut -c 1)
           default_tag="${search}0.0.0"
+          git status
           rev="$(git rev-list --tags --all --max-count=1)"
-          version=$(git describe --tags --always $rev | grep ^$search)
+          echo $rev
           echo "current_tag=${version:-$default_tag}" >> $GITHUB_ENV
 
       - name: install @actions/core package
@@ -83,4 +84,8 @@ jobs:
         env: 
           tag: ${{ steps.prepare-tag.outputs.tag-version }}
         run: |
-          sed -i "s/${{ inputs.target }}=/${{ inputs.target }}=$tag/g" ../../version.ini
+          sed -i "s/${{ inputs.target }}=/${{ inputs.target }}=$tag/g" ${{ github.workspace }}/version.ini
+          git status
+          git add .
+          git commit -m "updated ${{ inputs.target }} version to $tag"
+          git push origin ${{ github.ref_name }}
