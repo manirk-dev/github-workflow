@@ -19,6 +19,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: ${{ inputs.target }}
+    outputs:
+      tag: ${{ steps.prepare-tag.outputs.tag-version }}
     steps:
       # Install node
       - name: Setup Node.js environment
@@ -37,7 +39,6 @@ jobs:
           git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
 
       - name: Get Tag
-        id: get-tag
         shell: bash
         run: |
           search="$(echo "${{ inputs.target }}" | cut -c 1)"
@@ -71,9 +72,17 @@ jobs:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
         run: npm run build -- $CLIENT_ID
 
-      - name: Persist tag version
-        env: 
-          tag: ${{ steps.prepare-tag.outputs.tag-version }}
+
+  deploy:
+    name: Deployment
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target }}
+    env:
+      tag: ${{ needs.build.outputs.tag }}
+
+    steps:
+      - name: Persist tag ${{ env.tag }}
         run: |
           git fetch origin ${{ inputs.branch }}
           sed -i "s/${{ inputs.target }}=[^ ]*/${{ inputs.target }}=$tag/g" ${{ github.workspace }}/version.ini
@@ -82,10 +91,8 @@ jobs:
           git commit -m "updated ${{ inputs.target }} version to $tag"
           git push origin ${{ inputs.branch }}
 
-
-      - name: Create Release
+      - name: Release ${{ env.tag }} for ${{ inputs.target }}
         env:
-          tag: ${{ steps.prepare-tag.outputs.tag-version }}
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$tag" \
