@@ -28,9 +28,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout code from repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-tags: true
+
 
       - name: Get Tag
         id: get-tag
+        shell: bash
         run: |
           search=$(echo "${{ inputs.target }}" | cut -c 1)
           default_tag="${search}0.0.0"
